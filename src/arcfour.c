@@ -60,3 +60,15 @@ void arcfour_prga(unsigned char *s, size_t key_size, unsigned char *keystream, s
        keystream[i] = s[pseudbyte];
     }
 }
+
+void encrypt(size_t plaintext_size, char *cipher, char *keystream, char *plaintext) {
+    for (int i = 0; i < plaintext_size; i++) {
+        cipher[i] = plaintext[i] ^ keystream[i];
+    }
+}
+
+void decrypt(size_t plaintext_size, char *cipher, char *keystream, char *deciphered) {
+    for (int i = 0; i < plaintext_size; i++) {
+        deciphered[i] = cipher[i] ^ keystream[i];
+    }
+}
