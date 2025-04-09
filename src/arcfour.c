@@ -1,3 +1,8 @@
+/*
+    @author William Rios
+    @author https://github.com/wiirios
+*/
+
 #include "arcfour.h"
 
 int fatal(char *msg) {
@@ -12,7 +17,7 @@ struct s_arcfour* create_arc(unsigned char *s, char *key, size_t key_size) {
         memcpy(s_->s, s, MAX);
         s_->key = key;
         s_->key_size = key_size;
-    }
+    } else fatal("allocating memory");
 
     return s_;
 }
@@ -40,7 +45,9 @@ void arcfour_prga(unsigned char *s, size_t key_size, unsigned char *keystream, s
     int i = 0;
     int j = 0;
     int n = 0;
-    
+
+    if (s[1] == '\0') fatal("array is EMPTY, Please fill the array with 'ksa' function");
+
     for (; n < secret_size; n++) {
         j = (j + 1) % 256;
         j = (j + s[i]) % 256;
