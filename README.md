@@ -95,13 +95,13 @@ free(s_);
 
 In addition to passing a plaintext message directly via the command line, you can also instruct the program to read the plaintext from a text file. This is useful when working with larger messages or secret files.
 
-``` c
+```
 arcfour.exe "path/to/message.txt" "your encryption key" true
 ```
 > [!WARNING]
 > The third argument must be the string "true", or the file input will not be used.
 
-``` c
+```
 arcfour.exe "texts/secret.txt" "MySecretKey123" true
 ```
 
