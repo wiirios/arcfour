@@ -8,5 +8,4 @@ set(SOURCES
 
 add_executable(arcfour ${SOURCES})
 
-# Inclui o diretório com os headers
 target_include_directories(arcfour PRIVATE src)
