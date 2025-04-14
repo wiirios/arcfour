@@ -28,10 +28,11 @@ cmake --build .
 Run the compiled binary from the terminal:
 
 ```sh
-arcfour.exe "your secret message" "your encryption key"
+arcfour.exe "your secret message OR file path" "your encryption key" "boolean value to indicate whether there will be a file read"
 ```
 - argv[1]: The message you want to encrypt.
 - argv[2]: The key used for encryption/decryption.
+- argv[3]: True OR False if `argv[1]` is a file path
 
 ## Using It in Your Project
 To use the algorithm in your own C project:
@@ -90,6 +91,66 @@ deciphered[plaintext_size] = '\0'; // Add null terminator
 // Free allocated memory
 free(s_);
 ```
+## Reading Plaintext from a File
+
+In addition to passing a plaintext message directly via the command line, you can also instruct the program to read the plaintext from a text file. This is useful when working with larger messages or secret files.
+
+``` c
+arcfour.exe "path/to/message.txt" "your encryption key" true
+```
+> [!WARNING]
+> The third argument must be the string "true", or the file input will not be used.
+
+``` c
+arcfour.exe "texts/secret.txt" "MySecretKey123" true
+```
+
+### Step-by-step Implementation
+
+1. Update `main` to accept a third argument
+Modify your main function to read a third argument that indicates whether the input is a file:
+
+``` c
+int main(int argc, char *argv[]) {
+    unsigned char *plaintext; // do not initialize the variable yet!
+    unsigned char *key = argv[2];
+    char *isFile = argv[3]; // "true" if reading from file
+
+    size_t key_size = strlen(key);
+    size_t plaintext_size = 0;
+    ...
+}
+```
+2. Read from the file
+
+``` c
+if (strcmp(isFile, "true") == 0) {
+        FILE *file = fopen(argv[1], "r");
+        
+        if (file == NULL) fatal("failed to open file");
+
+        /* obtain file size */
+        fseek(file, 0, SEEK_END);
+        plaintext_size = ftell(file);
+        rewind(file);
+
+        plaintext = malloc(plaintext_size + 1);
+        if (plaintext == NULL) fatal("allocating memory");
+
+        fread(plaintext, 1, plaintext_size, file);
+        fclose(file); // close the file
+    } else {
+        plaintext = argv[1];
+        plaintext_size = strlen(plaintext);
+    }
+```
+
+and don't forget to free up memory at the end
+
+``` c
+if (strcmp(isFile, "true") == 0) free(plaintext);
+```
+
 ### struct s_arcfour Explained
 The s_arcfour structure is used to store the internal state of the RC4 algorithm and the key data. Here's the definition:
 ``` c
